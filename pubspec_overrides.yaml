@@ -1,0 +1,2 @@
+dependency_overrides:
+  app_links: ^3.5.0
