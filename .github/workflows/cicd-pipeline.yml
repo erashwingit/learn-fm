@@ -50,7 +50,7 @@ jobs:
         run: |
           curl --http1.1 \
             -X POST \
-            -H "Authorization: Bearer ${{ secrets.APPETIZE_API_TOKEN }}" \
+            -u "${{ secrets.APPETIZE_API_TOKEN }}:" \
             -F "file=@build/app/outputs/flutter-apk/app-debug.apk" \
             -F "platform=android" \
             -F "note=Auto-deployed from commit ${{ github.sha }}" \
