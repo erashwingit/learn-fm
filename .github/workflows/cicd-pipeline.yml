@@ -38,18 +38,29 @@ jobs:
       - name: Build APK debug
         run: flutter build apk --debug --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
 
-      - name: Upload Debug APK
+      - name: Upload Debug APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: learn-fm-debug-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
           retention-days: 30
 
+      - name: Deploy debug APK to Appetize
+        if: github.ref == 'refs/heads/main'
+        run: |
+          curl --http1.1 \
+            -X POST \
+            -H "Authorization: Bearer ${{ secrets.APPETIZE_API_TOKEN }}" \
+            -F "file=@build/app/outputs/flutter-apk/app-debug.apk" \
+            -F "platform=android" \
+            -F "note=Auto-deployed from commit ${{ github.sha }}" \
+            "https://api.appetize.io/v1/apps/com.erashwin.learn_fm"
+
       - name: Build APK release (unsigned)
         run: flutter build apk --release --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
         continue-on-error: true
 
-      - name: Upload Release APK
+      - name: Upload Release APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: learn-fm-release-apk
@@ -76,4 +87,4 @@ jobs:
         continue-on-error: true
 
       - name: Done
-        run: echo "Deployment complete - APK available in artifacts!"
+        run: echo "Deployment complete - APK live on Appetize!"
