@@ -10,7 +10,7 @@ void main() async {
   );
   final supabaseAnonKey = const String.fromEnvironment(
     'SUPABASE_ANON_KEY',
-    defaultValue: '',
+    defaultValue: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpscG94bGpuc3FnZWZrdGtocHJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwNzMzODMsImV4cCI6MjA4NzY0OTM4M30.wYqXUEn6oQHuKRPbeCWlyRuqnLy4VieugCnAViWrvHU',
   );
 
   await Supabase.initialize(
