@@ -54,7 +54,7 @@ jobs:
             -F "file=@build/app/outputs/flutter-apk/app-debug.apk" \
             -F "platform=android" \
             -F "note=Auto-deployed from commit ${{ github.sha }}" \
-            "https://api.appetize.io/v1/apps/com.erashwin.learn_fm"
+            "https://api.appetize.io/v1/apps/${{ secrets.APPETIZE_APP_KEY }}"
 
       - name: Build APK release (unsigned)
         run: flutter build apk --release --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
