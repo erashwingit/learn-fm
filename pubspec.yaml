@@ -53,6 +53,8 @@ dependencies:
   uuid: ^4.2.1
   url_launcher: ^6.2.2
   connectivity_plus: ^5.0.2
+    # Deep Linking
+  app_links: ^5.0.0
 
 dev_dependencies:
   flutter_test:
