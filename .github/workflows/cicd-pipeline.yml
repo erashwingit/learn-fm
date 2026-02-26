@@ -30,29 +30,21 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
-      - name: Build APK (debug - no signing needed)
-        run: flutter build apk --debug
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+      - name: Build APK debug
+        run: flutter build apk --debug --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
 
-      - name: Upload APK artifact
+      - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: learn-fm-debug-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
           retention-days: 30
 
-      - name: Build Release APK
-        run: flutter build apk --release
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+      - name: Build APK release (unsigned)
+        run: flutter build apk --release --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
         continue-on-error: true
 
-      - name: Upload Release APK artifact
+      - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
           name: learn-fm-release-apk
@@ -78,5 +70,5 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         continue-on-error: true
 
-      - name: Notify Deployment Complete
-        run: echo "Learn FM deployed successfully!"
+      - name: Done
+        run: echo "Deployment complete - APK available in artifacts!"
