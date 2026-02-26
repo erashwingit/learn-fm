@@ -46,7 +46,7 @@ dependencies:
   flutter_tts: ^3.8.5
 
   # Notifications
-  flutter_local_notifications: ^16.3.0
+  flutter_local_notifications: ^17.2.4
 
   # Utils
   intl: ^0.18.1
@@ -83,3 +83,4 @@ flutter:
 dependency_overrides:
   app_links: 6.3.2
   flutter_inappwebview: 6.1.5
+    flutter_local_notifications: 17.2.4
