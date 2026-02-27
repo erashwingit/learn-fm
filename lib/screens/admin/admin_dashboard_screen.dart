@@ -45,29 +45,33 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       final db = Supabase.instance.client;
 
       // Fetch all stats in parallel
-      // Fetch all stats separately
-      final coursesResp = await db.from('courses').select('id').count();
-      final lessonsResp = await db.from('lessons').select('id').count();
-      final enrollmentsResp = await db.from('enrollments').select('id').count();
-      final usersResp = await db.from('profiles').select('id').count();
-      final profile = await db
-          .from('profiles')
-          .select('full_name')
-          .eq('id', db.auth.currentUser?.id ?? '')
-          .maybeSingle();
+      final results = await Future.wait([
+        db.from('courses').select('id').count(), // courses count
+        db.from('lessons').select('id').count(), // lessons count
+        db.from('enrollments').select('id').count(), // enrollments count
+        db.from('profiles').select('id').count(), // users (profiles) count
+        db
+            .from('profiles')
+            .select('full_name')
+            .eq('id', db.auth.currentUser?.id ?? '')
+            .maybeSingle(), // current user name
+      ]);
 
       if (mounted) {
         setState(() {
-// Extract counts from responses
-        _totalCourses = (coursesResp as dynamic).count as int? ?? 0;
-        _totalLessons = (lessonsResp as dynamic).count as int? ?? 0;
-        _totalEnrollments = (enrollmentsResp as dynamic).count as int? ?? 0;
-        _totalUsers = (usersResp as dynamic).count as int? ?? 0;
-        _adminName = (profile as Map<String, dynamic>?)?['full_name'] as String? ??
-            Supabase.instance.client.auth.currentUser?.email
-                ?.split('@')
-                .first ??
-            'Admin';
+          // Results from .count() return PostgrestCountResponse
+          _totalCourses = (results[0] as dynamic).count as int? ?? 0;
+          _totalLessons = (results[1] as dynamic).count as int? ?? 0;
+          _totalEnrollments = (results[2] as dynamic).count as int? ?? 0;
+          _totalUsers = (results[3] as dynamic).count as int? ?? 0;
+          final profile = results[4] as Map<String, dynamic>?;
+          _adminName = profile?['full_name'] as String? ??
+              Supabase.instance.client.auth.currentUser?.email
+                  ?.split('@')
+                  .first ??
+              'Admin';
+          _statsLoading = false;
+        });
       }
     } catch (e) {
       if (mounted) {
