@@ -69,10 +69,11 @@ class UploadService {
         );
       }
 
-      // supabaseUrl lives on Supabase.instance, not on SupabaseClient in v2
-      final supabaseUrl = Supabase.instance.supabaseUrl;
+      // In supabase_flutter v2, use _db.storage.url which returns the
+      // full Storage base URL: https://xxx.supabase.co/storage/v1
+      final storageBaseUrl = _db.storage.url;
       final uploadUrl = Uri.parse(
-          '$supabaseUrl/storage/v1/object/$bucket/$storagePath');
+          '$storageBaseUrl/object/$bucket/$storagePath');
 
       final request = http.Request('POST', uploadUrl)
         ..headers.addAll({
