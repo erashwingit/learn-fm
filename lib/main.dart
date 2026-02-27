@@ -5,6 +5,10 @@ import 'screens/auth/login_screen.dart';
 import 'screens/auth/register_screen.dart';
 import 'screens/dashboard/dashboard_screen.dart';
 import 'screens/courses/course_detail_screen.dart';
+import 'screens/admin/admin_dashboard_screen.dart';
+import 'screens/admin/upload_content_screen.dart';
+import 'screens/admin/upload_lesson_screen.dart';
+import 'screens/admin/manage_courses_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +49,10 @@ class LearnFMApp extends StatelessWidget {
         '/register': (context) => const RegisterScreen(),
         '/dashboard': (context) => const DashboardScreen(),
         '/course-detail': (context) => const CourseDetailScreen(),
+        '/admin': (context) => const AdminDashboardScreen(),
+        '/admin/upload-course': (context) => const UploadCourseScreen(),
+        '/admin/upload-lesson': (context) => const UploadLessonScreen(),
+        '/admin/manage-courses': (context) => const ManageCoursesScreen(),
       },
     );
   }
