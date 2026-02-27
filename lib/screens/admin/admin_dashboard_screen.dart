@@ -44,31 +44,26 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     try {
       final db = Supabase.instance.client;
 
-      // Fetch all stats in parallel
-      final results = await Future.wait([
-        db.from('courses').select('id').count(), // courses count
-        db.from('lessons').select('id').count(), // lessons count
-        db.from('enrollments').select('id').count(), // enrollments count
-        db.from('profiles').select('id').count(), // users (profiles) count
-        db
-            .from('profiles')
-            .select('full_name')
-            .eq('id', db.auth.currentUser?.id ?? '')
-            .maybeSingle(), // current user name
-      ]);
+      // Sequential awaits — avoids Future.wait mixed-type inference error
+      final coursesResp = await db.from('courses').select('id').count();
+      final lessonsResp = await db.from('lessons').select('id').count();
+      final enrollResp  = await db.from('enrollments').select('id').count();
+      final usersResp   = await db.from('profiles').select('id').count();
+      final profileResp = await db
+          .from('profiles')
+          .select('full_name')
+          .eq('id', db.auth.currentUser?.id ?? '')
+          .maybeSingle();
 
       if (mounted) {
         setState(() {
-          // Results from .count() return PostgrestCountResponse
-          _totalCourses = (results[0] as dynamic).count as int? ?? 0;
-          _totalLessons = (results[1] as dynamic).count as int? ?? 0;
-          _totalEnrollments = (results[2] as dynamic).count as int? ?? 0;
-          _totalUsers = (results[3] as dynamic).count as int? ?? 0;
-          final profile = results[4] as Map<String, dynamic>?;
-          _adminName = profile?['full_name'] as String? ??
-              Supabase.instance.client.auth.currentUser?.email
-                  ?.split('@')
-                  .first ??
+          _totalCourses     = (coursesResp as dynamic).count as int? ?? 0;
+          _totalLessons     = (lessonsResp as dynamic).count as int? ?? 0;
+          _totalEnrollments = (enrollResp  as dynamic).count as int? ?? 0;
+          _totalUsers       = (usersResp   as dynamic).count as int? ?? 0;
+          _adminName        =
+              (profileResp as Map<String, dynamic>?)?['full_name'] as String? ??
+              db.auth.currentUser?.email?.split('@').first ??
               'Admin';
           _statsLoading = false;
         });

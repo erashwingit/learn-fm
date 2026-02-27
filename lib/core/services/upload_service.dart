@@ -69,7 +69,8 @@ class UploadService {
         );
       }
 
-      final supabaseUrl = _db.supabaseUrl;
+      // supabaseUrl lives on Supabase.instance, not on SupabaseClient in v2
+      final supabaseUrl = Supabase.instance.supabaseUrl;
       final uploadUrl = Uri.parse(
           '$supabaseUrl/storage/v1/object/$bucket/$storagePath');
 
